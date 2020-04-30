@@ -188,6 +188,11 @@ public class RunLogic extends AppCompatActivity {
                 //call image extractor function
                 MyImageExtractor extractor = new MyImageExtractor();
 
+                ModelData[] data = mItems.toArray(new ModelData[mItems.size()]);
+
+
+                ModelData result = extractor.FindKoreanWord(bitmap, data);
+
 
 
                 llSelectImageSide.setVisibility(View.GONE);
