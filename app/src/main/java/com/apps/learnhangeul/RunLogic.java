@@ -37,6 +37,7 @@ import com.apps.learnhangeul.service_layer.MyImageExtractor;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.opencv.android.OpenCVLoader;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -94,11 +95,25 @@ public class RunLogic extends AppCompatActivity {
         return true;
     }
 
+    static {
+        if (OpenCVLoader.initDebug()){
+            Log.d(TAG, "OpenCV is configured successfully");
+        }
+        else{
+
+            Log.d(TAG, "OpenCV is not configured correctly");
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_run_logic);
+
+
+        if (!OpenCVLoader.initDebug()) {
+            // Handle initialization error
+        }
 
         tvArtiKata = findViewById(R.id.artiKataTV);
         tvKataKorea = findViewById(R.id.kataKoreaTV);
@@ -286,7 +301,7 @@ public class RunLogic extends AppCompatActivity {
 
     private void loadAllDataFromDatabase(){
 
-        mProgressDialog.show();
+        //mProgressDialog.show();
 
         StringRequest arrayRequest = new StringRequest(Request.Method.GET, konfigurasi.URL_GET_ALL_ITEM, new Response.Listener<String>() {
 
@@ -325,7 +340,7 @@ public class RunLogic extends AppCompatActivity {
         }, new Response.ErrorListener(){
             @Override
             public void onErrorResponse(VolleyError error) {
-                mProgressDialog.cancel();
+                //mProgressDialog.cancel();
                 Log.d("volley", "error : " + error.getMessage());
             }
         });
