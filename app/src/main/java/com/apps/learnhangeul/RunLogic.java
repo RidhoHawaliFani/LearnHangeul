@@ -48,6 +48,7 @@ import java.net.URL;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -64,6 +65,8 @@ public class RunLogic extends AppCompatActivity {
 
     ImageView previewImage;
 
+    ModelData md = new ModelData();
+
     private int degree = 0;
 
     private Bitmap bitmap;
@@ -74,7 +77,7 @@ public class RunLogic extends AppCompatActivity {
     Uri mCapturedImageURI;
 
     ArrayList<HashMap<String, String>> list = new ArrayList<>();
-    ArrayList<ModelData> mItems;
+    ArrayList<ModelData> mItems = new ArrayList();
 
     private int PICK_IMAGE_REQUEST = 1;
     private static final int CAMERA_REQUEST = 1567;
@@ -189,30 +192,28 @@ public class RunLogic extends AppCompatActivity {
             }
         });
 
+        previewImage = findViewById(R.id.previewImageHereRunLogic);
+
         nextButton = findViewById(R.id.llNextButtonRunLogic);
         nextButton.setVisibility(View.GONE);
 
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                uploadImage();
-
-                //PUT LOGIC FUNCTION HERE.......
-                //-----------------------------
-
-
-
                 //call image extractor function
 
                 ModelData result = new ModelData();
                 if (mItems!= null){
+
                     ModelData[] data = mItems.toArray(new ModelData[mItems.size()]);
                     MyImageExtractor extractor = new MyImageExtractor();
 
                     //result contain all the image details
                     result = extractor.FindKoreanWord(bitmap, data);
+
                 }else{
                     //data have not been loaded
+                    Toast t = Toast.makeText(getApplicationContext(), "Processing failed...", Toast.LENGTH_LONG);
                 }
 
 
@@ -243,12 +244,13 @@ public class RunLogic extends AppCompatActivity {
             }
         });
 
-        previewImage = findViewById(R.id.previewImageHereRunLogic);
-
-
         ActivityCompat.requestPermissions(RunLogic.this, PERMISSIONS, 112);
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
     }
 
     @Override
@@ -309,7 +311,7 @@ public class RunLogic extends AppCompatActivity {
 
         //mProgressDialog.show();
 
-        StringRequest arrayRequest = new StringRequest(Request.Method.GET, konfigurasi.URL_GET_ALL_ITEM, new Response.Listener<String>() {
+         StringRequest arrayRequest = new StringRequest(Request.Method.GET, konfigurasi.URL_GET_ALL_ITEM, new Response.Listener<String>() {
 
             JSONObject jsonObject;
             JSONArray Jarray;
@@ -323,11 +325,13 @@ public class RunLogic extends AppCompatActivity {
                 try {
                     jsonObject = new JSONObject(response);
                     Jarray = jsonObject.getJSONArray("result");
+                    mItems.clear();
 
-                    for (int i=1; i <= Jarray.length(); i++){
+                    Log.e("ARRAYSIZEM_ITEMS", Integer.toString(Jarray.length()));
+
+                    for (int i=1; i <= Jarray.length()-1; i++){
 
                         JSONObject Jasonobject = Jarray.getJSONObject(i);
-                        ModelData md = new ModelData();
 
                         Bitmap resultImage = getBitmapFromURL(Jasonobject.getString("gambarKanji"));
 
@@ -339,6 +343,7 @@ public class RunLogic extends AppCompatActivity {
                         mItems.add(md);
 
                     }
+
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -358,14 +363,10 @@ public class RunLogic extends AppCompatActivity {
     public static Bitmap getBitmapFromURL(String src) {
         try {
             URL url = new URL(src);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
-        } catch (IOException e) {
-            // Log exception
+            Bitmap image = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+            return  image;
+        } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
