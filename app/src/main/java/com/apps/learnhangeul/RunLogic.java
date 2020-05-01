@@ -115,6 +115,10 @@ public class RunLogic extends AppCompatActivity {
             // Handle initialization error
         }
 
+        //starting loading data first...
+        loadAllDataFromDatabase();
+
+
         tvArtiKata = findViewById(R.id.artiKataTV);
         tvKataKorea = findViewById(R.id.kataKoreaTV);
         tvKanji = findViewById(R.id.kanjiTV);
@@ -196,18 +200,20 @@ public class RunLogic extends AppCompatActivity {
                 //PUT LOGIC FUNCTION HERE.......
                 //-----------------------------
 
-                //starting loading data first...
-                loadAllDataFromDatabase();
 
 
                 //call image extractor function
-                MyImageExtractor extractor = new MyImageExtractor();
 
-                ModelData[] data = mItems.toArray(new ModelData[mItems.size()]);
+                ModelData result = new ModelData();
+                if (mItems!= null){
+                    ModelData[] data = mItems.toArray(new ModelData[mItems.size()]);
+                    MyImageExtractor extractor = new MyImageExtractor();
 
-
-                ModelData result = extractor.FindKoreanWord(bitmap, data);
-
+                    //result contain all the image details
+                    result = extractor.FindKoreanWord(bitmap, data);
+                }else{
+                    //data have not been loaded
+                }
 
 
                 llSelectImageSide.setVisibility(View.GONE);
@@ -307,9 +313,11 @@ public class RunLogic extends AppCompatActivity {
 
             JSONObject jsonObject;
             JSONArray Jarray;
+
+            @Override
             public void onResponse(String response) {
 //                pd.cancel();
-                mProgressDialog.cancel();
+                //mProgressDialog.cancel();
                 Log.d("volley", "response : " + response);
 
                 try {
