@@ -5,6 +5,11 @@ import android.graphics.Bitmap;
 
 public class ModelData {
 
+    public String getAllData(){
+        return  kataKanji+" "+ kataKorea+ " "+ artiKata+" " + image.toString();
+
+    }
+
     public String getKataKanji() {
         return kataKanji;
     }
