@@ -27,50 +27,59 @@ public class MyImageExtractor {
             new Size(2 * erodeAmount + 1, 2 * erodeAmount + 1),
             new Point(erodeAmount, erodeAmount));
 
-    public MyImageExtractor(){}
+    public MyImageExtractor(){
 
+    }
+
+    public double FindLearningRate(Bitmap input){
+        double result = 0;
+        //Find
+        return result;
+    }
     public ModelData FindKoreanWord(Bitmap input, ModelData[] data){
         Mat test = Preprocess(input);
 
-        double smallestDistance = 0;
+
         int smallestDistanceIndex = 0;
 
+        //persiapan penampung hasil jarak sesuai banyaknya jumlah maxEpoch (data.length)
         double[] result = new double[data.length];
-        System.out.println("Mulai Pengenalan");
 
+        //loop sesuai jumlah maxEpoch
         for (int i = 0; i < data.length ; i++){
-            System.out.println("Data ke "+ i);
+
+            //konversi Data training ke bentuk yang kita mau ( 400x400 dan binary )
             Mat trained = Preprocess(data[i].getImage());
+
+            //variable temporary untuk penampung jarak antara training dan testing
             int distance = 0;
-            //Find the smallest distance
+
+            //loop sesuai besar image testing
             for (int x = 0; x < test.width(); x++){
                 for (int y = 0; y < test.height(); y++){
                 result[i] = 0;
+
+                //mengambil nilai pixel image testing dan training
                 double testPixel = test.get(y, x)[0] / 255;
                 double trainedPixel = trained.get(y, x)[0] / 255;
-                double minus = (testPixel - trainedPixel);
 
-                distance += Math.pow(minus, 2);
-                //if (minus > 0){
-                    System.out.println(testPixel + " - " + trainedPixel +" pangkat 2 = " + Math.pow(minus, 2));
-                //}
+                //menghitung jarak dari train ke testing, lalu ditambahkan ke penampung
+                distance += Math.pow((testPixel - trainedPixel), 2);
 
                 }
             }
 
+            //jumlah semua jarak pixel testing dan training diakar kuadrat
             result[i] = Math.sqrt(distance);
-            //Compare to get the smallest distance
-            //if (smallestDistance > Math.sqrt(result[i])){
-            //    smallestDistance = Math.sqrt(result[i]);
-            //   smallestDistanceIndex = i;
-            //}
-
 
         }
-        smallestDistanceIndex = FindSmallestNumber(result);
+
+        //mengambil index dari array data training yang nilai jaraknya terendah
+        smallestDistanceIndex = FindSmallestNumberIndex(result);
+
+        //data training yang sesuai dikembalikan
         return data[smallestDistanceIndex];
     }
-
     private Mat Preprocess(Bitmap input){
         Mat result = new Mat();
         Size imgBaseSize = new Size(imageSize,imageSize);
@@ -88,11 +97,11 @@ public class MyImageExtractor {
         threshold(result, result, binaryTreshold, 255, THRESH_BINARY);
 
         //erode image
-        //erode(result, result, kernel);
+        erode(result, result, kernel);
 
         return result;
     }
-    private int FindSmallestNumber(double a[]){
+    private int FindSmallestNumberIndex(double a[]){
         double minimum;
         int index=0,i=1;
         minimum=a[0];

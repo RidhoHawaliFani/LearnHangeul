@@ -223,9 +223,11 @@ public class RunLogic extends AppCompatActivity {
                     }
 
                     //result contain all the image details
-                    extractor.FindKoreanWord(bitmap, data);
+                    ModelData result = extractor.FindKoreanWord(bitmap, data);
 
-
+                    tvArtiKata.setText(result.artiKata);
+                    tvKataKorea.setText(result.kataKorea);
+                    tvKanji.setText(result.kataKanji);
 
                 }else{
                     //data have not been loaded
