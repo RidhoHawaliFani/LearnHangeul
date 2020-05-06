@@ -29,9 +29,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.apps.learnhangeul.service_layer.MyImageExtractor;
 
 import org.json.JSONArray;
@@ -65,7 +67,7 @@ public class RunLogic extends AppCompatActivity {
 
     ImageView previewImage;
 
-    ModelData md = new ModelData();
+
 
     private int degree = 0;
 
@@ -77,7 +79,7 @@ public class RunLogic extends AppCompatActivity {
     Uri mCapturedImageURI;
 
     ArrayList<HashMap<String, String>> list = new ArrayList<>();
-    ArrayList<ModelData> mItems = new ArrayList();
+    ArrayList<ModelData> mItems;
 
     private int PICK_IMAGE_REQUEST = 1;
     private static final int CAMERA_REQUEST = 1567;
@@ -114,12 +116,16 @@ public class RunLogic extends AppCompatActivity {
         setContentView(R.layout.activity_run_logic);
 
 
+        mItems = new ArrayList<>();
+
+
         if (!OpenCVLoader.initDebug()) {
             // Handle initialization error
         }
 
         //starting loading data first...
         loadAllDataFromDatabase();
+
 
 
         tvArtiKata = findViewById(R.id.artiKataTV);
@@ -201,19 +207,30 @@ public class RunLogic extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //call image extractor function
-
-                ModelData result = new ModelData();
                 if (mItems!= null){
+
+
+
+                    Toast.makeText(getApplicationContext(), "Processing successed...", Toast.LENGTH_LONG).show();
 
                     ModelData[] data = mItems.toArray(new ModelData[mItems.size()]);
                     MyImageExtractor extractor = new MyImageExtractor();
 
+
+
+                    for (int i=0; i<mItems.size();i++){
+                        Log.e("getDataAll_"+i, mItems.get(i).getAllData());
+                    }
+
                     //result contain all the image details
-                    result = extractor.FindKoreanWord(bitmap, data);
+                    extractor.FindKoreanWord(bitmap, data);
+
+
 
                 }else{
                     //data have not been loaded
-                    Toast t = Toast.makeText(getApplicationContext(), "Processing failed...", Toast.LENGTH_LONG);
+                    Toast.makeText(getApplicationContext(), "Processing failed...", Toast.LENGTH_LONG).show();
+
                 }
 
 
@@ -244,6 +261,8 @@ public class RunLogic extends AppCompatActivity {
             }
         });
 
+
+
         ActivityCompat.requestPermissions(RunLogic.this, PERMISSIONS, 112);
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
@@ -265,9 +284,6 @@ public class RunLogic extends AppCompatActivity {
 
             File f = new File(filePath.toString());
             String imageName = f.getName();
-
-            Log.e("namaImage", filePath.toString());
-
             this.imageName = imageName;
 
             try {
@@ -310,11 +326,13 @@ public class RunLogic extends AppCompatActivity {
     private void loadAllDataFromDatabase(){
 
         //mProgressDialog.show();
-
+         RequestQueue queue = Volley.newRequestQueue(this);
          StringRequest arrayRequest = new StringRequest(Request.Method.GET, konfigurasi.URL_GET_ALL_ITEM, new Response.Listener<String>() {
 
             JSONObject jsonObject;
             JSONArray Jarray;
+
+
 
             @Override
             public void onResponse(String response) {
@@ -323,17 +341,20 @@ public class RunLogic extends AppCompatActivity {
                 Log.d("volley", "response : " + response);
 
                 try {
+
+
                     jsonObject = new JSONObject(response);
                     Jarray = jsonObject.getJSONArray("result");
-                    mItems.clear();
+
 
                     Log.e("ARRAYSIZEM_ITEMS", Integer.toString(Jarray.length()));
 
-                    for (int i=1; i <= Jarray.length()-1; i++){
+                    for (int i=1; i <= Jarray.length(); i++){
 
                         JSONObject Jasonobject = Jarray.getJSONObject(i);
 
                         Bitmap resultImage = getBitmapFromURL(Jasonobject.getString("gambarKanji"));
+                        ModelData md = new ModelData();
 
                         md.setImage(resultImage);
                         md.setKataKanji(Jasonobject.getString("kataKanji"));
@@ -341,7 +362,7 @@ public class RunLogic extends AppCompatActivity {
                         md.setArtiKata(Jasonobject.getString("artiKata"));
                         // memanggil nama array yang kita buat
                         mItems.add(md);
-
+                        Log.e("getDataAllBawah_"+(i-1), mItems.get(i-1).getAllData());
                     }
 
 
@@ -357,7 +378,7 @@ public class RunLogic extends AppCompatActivity {
                 Log.d("volley", "error : " + error.getMessage());
             }
         });
-        Controller.getInstance().addToRequestQueue(arrayRequest);
+        queue.add(arrayRequest);
     }
 
     public static Bitmap getBitmapFromURL(String src) {
