@@ -15,7 +15,6 @@ import static org.opencv.imgproc.Imgproc.threshold;
 
 public class MyImageLibrary {
 
-    private final int erodeAmount = 1;
     private final int binaryTreshold = 127;
     private final int imageSize = 300;
 
@@ -40,11 +39,6 @@ public class MyImageLibrary {
         Mat result = new Mat();
 
         Utils.bitmapToMat(input.copy(Bitmap.Config.ARGB_8888, true), result);
-        return result;
-    }
-    public Bitmap ConvertMatToBitmap(Mat input){
-        Bitmap result = Bitmap.createBitmap(input.cols(), input.rows(), Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(input, result);
         return result;
     }
     public Mat Preprocess(Bitmap input){
