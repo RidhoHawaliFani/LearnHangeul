@@ -42,11 +42,18 @@ public class ModelData {
         this.artiKata = artiKata;
     }
 
+    public double[] getBobot() {
+        return bobot;
+    }
+
+    public void setBobot(double[] bobot) {
+        this.bobot = bobot;
+    }
 
     String kataKanji;
     String kataKorea;
     Bitmap image;
     String artiKata;
-
+    double[] bobot;
 
 }

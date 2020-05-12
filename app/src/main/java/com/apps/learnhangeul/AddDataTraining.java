@@ -17,6 +17,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.apps.learnhangeul.service_layer.MyImageExtractor;
+import com.apps.learnhangeul.service_layer.MyImageLibrary;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
@@ -136,6 +138,20 @@ public class AddDataTraining extends AppCompatActivity {
     }
 
     private void sendJsonAddInvoice() {
+        ModelData inputUser = new ModelData();
+        ModelData[] dataTraining = new ModelData[1];
+        StaticData[] static_values = new StaticData[1];
+
+        MyImageExtractor extractor = new MyImageExtractor();
+        // New Logic here
+        // Kalau data belum ada di db
+        inputUser = extractor.TrainDataBaru(inputUser);
+        // insert inputan baru ke db
+
+        // Kalau data sudah ada di db
+        dataTraining = extractor.TrainDataLama(inputUser.getImage(), dataTraining, static_values );
+        //delete semua di db, insert ulang pakai data training baru
+
 
         // Creating string request with post method.
         StringRequest stringRequest2 = new StringRequest(Request.Method.POST, konfigurasi.URL_UPDATE_ITEM,

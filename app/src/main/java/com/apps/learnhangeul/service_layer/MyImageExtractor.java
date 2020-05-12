@@ -2,11 +2,15 @@ package com.apps.learnhangeul.service_layer;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
+import org.opencv.core.Rect;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 
 import com.apps.learnhangeul.ModelData;
+import com.apps.learnhangeul.ModelTraining;
+import com.apps.learnhangeul.StaticData;
 
 import java.util.Arrays;
 
@@ -27,17 +31,11 @@ public class MyImageExtractor {
             new Size(2 * erodeAmount + 1, 2 * erodeAmount + 1),
             new Point(erodeAmount, erodeAmount));
 
-    public MyImageExtractor(){
+    public MyImageExtractor(){}
 
-    }
-
-    public double FindLearningRate(Bitmap input){
-        double result = 0;
-        //Find
-        return result;
-    }
-    public ModelData FindKoreanWord(Bitmap input, ModelData[] data){
-        Mat test = Preprocess(input);
+    public ModelData FindKoreanWord(Bitmap input, ModelData[] data, StaticData[] values){
+        MyImageLibrary lib = new MyImageLibrary();
+        Mat test = lib.Preprocess(input);
 
 
         int smallestDistanceIndex = 0;
@@ -49,7 +47,7 @@ public class MyImageExtractor {
         for (int i = 0; i < data.length ; i++){
 
             //konversi Data training ke bentuk yang kita mau ( 400x400 dan binary )
-            Mat trained = Preprocess(data[i].getImage());
+            Mat trained = lib.ConvertBitmapToMat(data[i].getImage());
 
             //variable temporary untuk penampung jarak antara training dan testing
             int distance = 0;
@@ -60,8 +58,8 @@ public class MyImageExtractor {
                 result[i] = 0;
 
                 //mengambil nilai pixel image testing dan training
-                double testPixel = test.get(y, x)[0] / 255;
-                double trainedPixel = trained.get(y, x)[0] / 255;
+                double testPixel = test.get(y, x)[0];
+                double trainedPixel = trained.get(y, x)[0];
 
                 //menghitung jarak dari train ke testing, lalu ditambahkan ke penampung
                 distance += Math.pow((testPixel - trainedPixel), 2);
@@ -75,45 +73,94 @@ public class MyImageExtractor {
         }
 
         //mengambil index dari array data training yang nilai jaraknya terendah
-        smallestDistanceIndex = FindSmallestNumberIndex(result);
+        smallestDistanceIndex = lib.FindSmallestNumberIndex(result);
 
         //data training yang sesuai dikembalikan
         return data[smallestDistanceIndex];
     }
-    private Mat Preprocess(Bitmap input){
-        Mat result = new Mat();
-        Size imgBaseSize = new Size(imageSize,imageSize);
 
-        //convert java bitmap to openCV mat
-        Utils.bitmapToMat(input.copy(Bitmap.Config.ARGB_8888, true), result);
-
-        //resize to size we want
-        resize(result, result, imgBaseSize );
-
-        //transform to gray scale image
-        cvtColor(result, result, Imgproc.COLOR_RGB2GRAY);
-
-        //transform image to binary
-        threshold(result, result, binaryTreshold, 255, THRESH_BINARY);
-
-        //erode image
-        erode(result, result, kernel);
-
-        return result;
+    //Panggil ini kalau data training belom ada di db
+    public ModelData TrainDataBaru(ModelData input){
+        MyImageLibrary lib = new MyImageLibrary();
+        Bitmap image = input.getImage();
+        Mat trained = lib.Preprocess(image);
+        input.setBobot(lib.GetBobot(trained));
+        return input;
     }
-    private int FindSmallestNumberIndex(double a[]){
-        double minimum;
-        int index=0,i=1;
-        minimum=a[0];
-        while(i<a.length)
-        {
-            if(minimum>a[i])
-            {
-                minimum=a[i];
-                index=i;
+    //Panggil ini kalau data training uda ada di db
+    public ModelData[] TrainDataLama(Bitmap input, ModelData[] data, StaticData[] staticData){
+        MyImageLibrary lib = new MyImageLibrary();
+
+        float learning_rate = staticData[0].getLearningRate();
+        int max_epoch = staticData[0].getMaxEpoch();
+        float min_error = staticData[0].getMinError();
+
+        Mat test = lib.Preprocess(input);
+
+        Mat[] trainedData = new Mat[data.length];
+
+        int smallestDistanceIndex = 0;
+
+        //persiapan penampung hasil jarak sesuai banyaknya jumlah maxEpoch (data.length)
+        double[] result = new double[data.length];
+
+        int epoch = 0;
+        //loop sesuai jumlah maxEpoch
+        while(epoch < max_epoch && learning_rate > min_error){
+            for (int i = 0; i < data.length ; i++){
+
+
+                //konversi Data training ke bentuk yang kita mau ( 400x400 dan binary )
+                Mat trained = lib.ConvertBitmapToMat(data[i].getImage());
+
+                trainedData[i] = trained;
+                //variable temporary untuk penampung jarak antara training dan testing
+                int distance = 0;
+
+                //loop sesuai besar image testing
+                for (int x = 0; x < test.width(); x++){
+                    for (int y = 0; y < test.height(); y++){
+                        result[i] = 0;
+
+                        //mengambil nilai pixel image testing dan training
+                        double testPixel = test.get(y, x)[0];
+                        double trainedPixel = trained.get(y, x)[0];
+
+                        //menghitung jarak dari train ke testing, lalu ditambahkan ke penampung
+                        distance += Math.pow((testPixel - trainedPixel), 2);
+
+                    }
+                }
+
+                //jumlah semua jarak pixel testing dan training diakar kuadrat
+                result[i] = Math.sqrt(distance);
+
             }
-            i++;
+
+            //mengambil index dari array data training yang nilai jaraknya terendah
+            smallestDistanceIndex = lib.FindSmallestNumberIndex(result);
+
+            //data training yang sesuai dikembalikan
+            //update bobot ke yang terbaru
+            double[] bobotTest = lib.GetBobot(trainedData[smallestDistanceIndex]);
+            double[] bobotTrain = data[smallestDistanceIndex].getBobot();
+
+            double[] bobotBaru = new double[bobotTrain.length];
+
+            for (int i = 0; i< bobotBaru.length; i++){
+                bobotBaru[i] = Math.round(bobotTrain[i] + learning_rate * (bobotTest[i] - bobotTrain[i]));
+            }
+
+            data[smallestDistanceIndex].setBobot(bobotBaru);
+
+            learning_rate = learning_rate - ((1/10) * learning_rate);
+            epoch++;
+
         }
-        return index;
+
+        return data;
     }
+
+
+
 }
