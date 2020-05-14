@@ -14,7 +14,7 @@ public class MyImageExtractor {
 
     public MyImageExtractor(){}
 
-    public ModelData FindKoreanWord(Bitmap input, ModelData[] data, StaticData[] values){
+    public ModelData FindKoreanWord(Bitmap input, ModelData[] data){
         MyImageLibrary lib = new MyImageLibrary();
         Mat test = lib.Preprocess(input);
         double[] bobotTesting = lib.GetBobot(test);
@@ -30,18 +30,16 @@ public class MyImageExtractor {
             //konversi Data training ke bentuk yang kita mau ( 400x400 dan binary )
             double[] bobotTraining = data[i].getBobot();
 
-            //variable temporary untuk penampung jarak antara training dan testing
+            //variable temporary untuk penampung jarak antara
+            // training dan testing
             int distance = 0;
 
             //loop sesuai besar image testing
             for (int x = 0; x < bobotTraining.length; x++){
-
                 result[i] = 0;
-
                 //mengambil nilai pixel image testing dan training
                 double testPixel = bobotTesting[x];
                 double trainedPixel = bobotTraining[x];
-
                 //menghitung jarak dari train ke testing, lalu ditambahkan ke penampung
                 distance += Math.pow((testPixel - trainedPixel), 2);
             }
@@ -71,6 +69,7 @@ public class MyImageExtractor {
         //kembalikan set data yang sudah berbobot
         return input;
     }
+
     //Panggil ini kalau data training uda ada di db
     public ModelData[] TrainDataLama(Bitmap input, ModelData[] data, StaticData[] staticData){
         MyImageLibrary lib = new MyImageLibrary();
@@ -84,7 +83,6 @@ public class MyImageExtractor {
         double[] bobotTesting = lib.GetBobot(test);
 
 
-        int smallestDistanceIndex = 0;
 
         //persiapan penampung hasil jarak sesuai banyaknya jumlah maxEpoch (data.length)
         double[] result = new double[data.length];
@@ -92,6 +90,7 @@ public class MyImageExtractor {
         int epoch = 1;
         //loop sesuai jumlah maxEpoch
         while(epoch < max_epoch && learning_rate > min_error){
+            int smallestDistanceIndex = 0;
             for (int i = 0; i < data.length ; i++){
                 double[] bobotTraining = data[i].getBobot();
 

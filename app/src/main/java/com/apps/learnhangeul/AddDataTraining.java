@@ -149,7 +149,15 @@ public class AddDataTraining extends AppCompatActivity {
         // insert inputan baru ke db
 
         // Kalau data sudah ada di db
-        dataTraining = extractor.TrainDataLama(inputUser.getImage(), dataTraining, static_values );
+        // ambil semua huruf beserta bobot yang ada di db => ModelData[]
+        ModelData[] dataTrainingLama = FindDataLama(); //ambil data dari db
+        ModelData[] dataTrainingBaru = extractor.TrainDataLama(inputUser.getImage(), dataTrainingLama, static_values );
+
+        //hapus semua bobot yang ada di db
+
+        // insert data yang ada di dataTrainingBaru
+
+        
         //delete semua di db, insert ulang pakai data training baru
 
 
