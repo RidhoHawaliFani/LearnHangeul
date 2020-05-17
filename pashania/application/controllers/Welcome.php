@@ -72,6 +72,52 @@ class Welcome extends CI_Controller {
 
 
     }
+
+    public function getStaticData()
+    {
+        $result[] = "";
+
+       
+
+        $selectAllShop = $this->Home_model->getSelectData("*","data_static", "");
+        foreach ($selectAllShop->result() as $row) {
+                //Memasukkan Nama dan ID kedalam Array Kosong yang telah dibuat 
+           
+
+            array_push($result,array(
+                "maxEpoch"=> $row->maxEpoch,
+                "minError"=> $row->minError,
+                "learningRate"=> $row->learningRate,
+                
+            ));
+        }
+            //Menampilkan Array dalam Format JSON
+        echo json_encode(array('result'=>$result));
+
+
+    }
+
+    public function checkDataFirst()
+    {
+        $result[] = "";
+
+       
+
+        $selectAllShop = $this->Home_model->getSelectData("*","data_static", "");
+        foreach ($selectAllShop->result() as $row) {
+                //Memasukkan Nama dan ID kedalam Array Kosong yang telah dibuat 
+           
+
+            array_push($result,array(
+                "dataHere"=> $row->maxEpoch,
+                
+            ));
+        }
+            //Menampilkan Array dalam Format JSON
+        echo json_encode(array('result'=>$result));
+
+
+    }
     
 
     public function updateNewestItem(){
@@ -102,6 +148,28 @@ class Welcome extends CI_Controller {
         
 
                
+        
+    }
+
+public function checkData(){
+
+            $result[] = "";
+            $idData = "";
+
+        
+           $kataKorea = $this->input->post('kataKorea');
+           $kataKanji = $this->input->post('kataKanji');
+           $artiKata = $this->input->post('artiKata');
+           
+            $selectNewestData = $this->Home_model->getSelectData("*","data_training", "WHERE (kataKorea='$kataKorea' and kataKorea!='') or (kataKanjiKorea='$kataKanji' and kataKanjiKorea!='') or (artiKata='$artiKata' and artiKata!='') ORDER BY idTraining DESC");
+            
+            if ($selectNewestData->result()) {
+                echo json_encode(array( "status" => "true"));     
+            }else {
+                echo json_encode(array( "status" => "false"));     
+            }
+
+            
         
     }
 
