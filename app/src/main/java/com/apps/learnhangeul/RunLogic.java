@@ -64,23 +64,14 @@ public class RunLogic extends AppCompatActivity {
 
     ProgressDialog mProgressDialog;
     private String imageName="";
-
     ImageView previewImage;
-
-
-
     private int degree = 0;
-
     private Bitmap bitmap;
-
     private Uri imageUri;
-
     public static int TAKE_IMAGE = 111;
     Uri mCapturedImageURI;
-
     ArrayList<HashMap<String, String>> list = new ArrayList<>();
     ArrayList<ModelData> mItems;
-
     private int PICK_IMAGE_REQUEST = 1;
     private static final int CAMERA_REQUEST = 1567;
     private Uri filePath;
@@ -223,7 +214,7 @@ public class RunLogic extends AppCompatActivity {
                     }
 
                     //result contain all the image details
-                    ModelData result = extractor.FindKoreanWord(bitmap, data, new StaticData[1]);
+                    ModelData result = extractor.FindKoreanWord(bitmap, data);
 
                     tvArtiKata.setText(result.artiKata);
                     tvKataKorea.setText(result.kataKorea);
