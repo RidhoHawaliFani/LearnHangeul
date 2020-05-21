@@ -195,4 +195,38 @@ public function checkData(){
 
     }
     
+
+    public function insertBobotToNewestItem()
+    {
+        $result[] = "";
+        $idTerbaru = "";
+        $kataKorea = $this->input->post('valueBobot');
+       
+
+        $selectAllShop = $this->Home_model->getSelectData("*","data_training", "ORDER BY idTraining DESC LIMIT 1");
+        foreach ($selectAllShop->result() as $row) {
+                $idTerbaru = $row->idTraining;
+        }
+
+        $i = 0;
+
+        while ($i <= sizeof($kataKorea)) {
+        	
+        	$data = array(
+                            'bobot' => $kataKorea,
+                            'id_data_training' => $idTerbaru
+                        );
+
+                $xxx =$this->Home_model->insertData('bobot_data_training' , $data);
+
+        	$i++;
+        }
+
+
+            //Menampilkan Array dalam Format JSON
+        echo json_encode(array('result'=>$result));
+
+
+    }
+    
 }

@@ -242,20 +242,21 @@ public class AddDataTraining extends AppCompatActivity {
         requestQueue.add(stringRequest2);
     }
 
-    private void insertBobotToDatabase() {
+    private void insertBobotToDatabase(final ModelData modelData) {
 
         // Creating string request with post method.
-        StringRequest stringRequest2 = new StringRequest(Request.Method.POST, konfigurasi.URL_UPDATE_ITEM,
+        StringRequest stringRequest2 = new StringRequest(Request.Method.POST, konfigurasi.URL_INSERT_BOBOT,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String ServerResponse) {
                         //act
                         Log.d("RESPONS EDIT AKUN", ServerResponse);
 
+
                         try {
                             JSONObject jsonObject = new JSONObject(ServerResponse);
                             //place message here.......
-                            customToast.Show_Toast(AddDataTraining.this, "Data berhasil disimpan...", Gravity.TOP|Gravity.CENTER);
+                            customToast.Show_Toast(AddDataTraining.this, "Data bobot disimpan...", Gravity.TOP|Gravity.CENTER);
                             //load data after saving new data-
                             loadAllDataFromDatabase();
 
@@ -282,9 +283,8 @@ public class AddDataTraining extends AppCompatActivity {
 
                 // Adding All values to Params.
 
-                params.put("kataKorea", kataKorea.getText().toString());
-                params.put("kataKanji", kataKanji.getText().toString());
-                params.put("artiKata", meaningKanji.getText().toString());
+                params.put("valueBobot", modelData.getBobot().toString());
+
 
                 return params;
             }
@@ -357,6 +357,8 @@ public class AddDataTraining extends AppCompatActivity {
                                 MyImageExtractor extractor = new MyImageExtractor();
                                 ModelData InputanUserBerbobot = extractor.TrainDataBaru(inputanUser); //Bang do insert ini ke DB
 
+                                //PROBLEMNYA : bobot belum didapat
+                                insertBobotToDatabase(InputanUserBerbobot);
 
 
 

@@ -5,8 +5,8 @@ public class konfigurasi {
     //Dibawah ini merupakan Pengalamatan dimana Lokasi Skrip CRUD PHP disimpan
     //PENTING! JANGAN LUPA GANTI IP SESUAI DENGAN IP KOMPUTER DIMANA DATA PHP BERADA
 
-    //private static final String SERVER_URL = "http://192.168.43.90";
-    private static final String SERVER_URL = "http://192.168.1.107";
+    private static final String SERVER_URL = "http://192.168.43.90";
+    //private static final String SERVER_URL = "http://192.168.1.107";
 
     public static final String URL_PROCESS_ADD_NEW_BUKTI_PEMBAYARAN = SERVER_URL + "/pashania/Welcome/prosesAddDataTraining";
     public static final String URL_GET_NEWEST_ITEM = SERVER_URL + "/pashania/Welcome/getNewestItem";
@@ -14,6 +14,7 @@ public class konfigurasi {
     public static final String URL_GET_ALL_ITEM = SERVER_URL + "/pashania/Welcome/getAllItem";
     public static final String URL_GET_DATA_ALL_BEFORE_PROCESS= SERVER_URL + "/pashania/Welcome/checkDataFirst";
     public static final String URL_UPDATE_ITEM = SERVER_URL + "/pashania/Welcome/updateNewestItem";
+    public static final String URL_INSERT_BOBOT= SERVER_URL + "/pashania/Welcome/insertBobotToNewestItem";
     public static final String URL_CHECK_DATA= SERVER_URL + "/pashania/Welcome/checkData";
 
     //Dibawah ini merupakan Kunci yang akan digunakan untuk mengirim permintaan ke Skrip PHP
