@@ -30,6 +30,7 @@ import com.bumptech.glide.request.RequestOptions;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.opencv.android.OpenCVLoader;
 
 import java.net.URL;
 import java.nio.channels.FileLock;
@@ -49,6 +50,16 @@ public class AddDataTraining extends AppCompatActivity {
     Bitmap GambarInputanUser = null;
 
 
+    private static final String TAG = "AddTrainingData";
+    static {
+        if (OpenCVLoader.initDebug()){
+            Log.d(TAG, "OpenCV is configured successfully");
+        }
+        else{
+
+            Log.d(TAG, "OpenCV is not configured correctly");
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +71,9 @@ public class AddDataTraining extends AppCompatActivity {
 
         mItemsStatic = new ArrayList<>();
         mItems = new ArrayList<>();
-
+        if (!OpenCVLoader.initDebug()) {
+            // Handle initialization error
+        }
 
 
 
@@ -229,6 +242,63 @@ public class AddDataTraining extends AppCompatActivity {
         requestQueue.add(stringRequest2);
     }
 
+    private void insertBobotToDatabase() {
+
+        // Creating string request with post method.
+        StringRequest stringRequest2 = new StringRequest(Request.Method.POST, konfigurasi.URL_UPDATE_ITEM,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String ServerResponse) {
+                        //act
+                        Log.d("RESPONS EDIT AKUN", ServerResponse);
+
+                        try {
+                            JSONObject jsonObject = new JSONObject(ServerResponse);
+                            //place message here.......
+                            customToast.Show_Toast(AddDataTraining.this, "Data berhasil disimpan...", Gravity.TOP|Gravity.CENTER);
+                            //load data after saving new data-
+                            loadAllDataFromDatabase();
+
+
+                            //update datatraining baru ke db disini
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+
+                // Creating Map String Params.
+                Map<String, String> params = new HashMap<>();
+
+                // Adding All values to Params.
+
+                params.put("kataKorea", kataKorea.getText().toString());
+                params.put("kataKanji", kataKanji.getText().toString());
+                params.put("artiKata", meaningKanji.getText().toString());
+
+                return params;
+            }
+
+        };
+
+        // Creating RequestQueue.
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+
+        // Adding the StringRequest object into requestQueue.
+        requestQueue.add(stringRequest2);
+    }
+
+
     private void checkDataByWord() {
 
 //        ModelData[] dataTraining = new ModelData[1];
@@ -283,9 +353,13 @@ public class AddDataTraining extends AppCompatActivity {
 
                                 sendJsonAddInvoice();
 
+                                ModelData inputanUser = new ModelData(kataKanji.getText().toString(), kataKorea.getText().toString(), meaningKanji.getText().toString(), GambarInputanUser, null);
+                                MyImageExtractor extractor = new MyImageExtractor();
+                                ModelData InputanUserBerbobot = extractor.TrainDataBaru(inputanUser); //Bang do insert ini ke DB
 
-                                ModelData inputanUser = new ModelData(kataKanji.getText().toString(), kataKorea.getText().toString(), meaningKanji.getText().toString(), GambarInputanUser, null); //Bang do insert ini ke DB
-                                
+
+
+
                                 //Tarok logic functionnya disini kalo data BELUM ada sebelumnya didatabase
                                 //place traindatabaru here...
 
