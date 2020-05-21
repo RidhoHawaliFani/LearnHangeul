@@ -46,6 +46,8 @@ public class AddDataTraining extends AppCompatActivity {
     ArrayList<StaticData> mItemsStatic;
     ArrayList<ModelData> mItems;
 
+    Bitmap GambarInputanUser = null;
+
 
 
     @Override
@@ -58,6 +60,8 @@ public class AddDataTraining extends AppCompatActivity {
 
         mItemsStatic = new ArrayList<>();
         mItems = new ArrayList<>();
+
+
 
 
         loadStaticData();
@@ -127,6 +131,13 @@ public class AddDataTraining extends AppCompatActivity {
                             for (int i=1; i < Jarray.length(); i++){
 
                                 JSONObject Jasonobject = Jarray.getJSONObject(i);
+
+                                Bitmap resultImage = getBitmapFromURL(Jasonobject.getString("filePath"));
+
+                                GambarInputanUser = resultImage;
+
+                                Log.e("getDataAllAtas_", GambarInputanUser.toString());
+
 
                                 RequestOptions requestOptions = new RequestOptions();
                                 requestOptions = requestOptions
@@ -262,7 +273,7 @@ public class AddDataTraining extends AppCompatActivity {
 
                                 ModelData[] dataTrainingLama = mItems.toArray(new ModelData[mItems.size()]);
                                 StaticData[] dataStaticTraining =  mItemsStatic.toArray(new StaticData[mItemsStatic.size()]);
-                                Bitmap GambarInputanUser = null; //ini harusnya bitmap inputan user, bantu assignkan ke variabel bang do
+                                 //ini harusnya bitmap inputan user, bantu assignkan ke variabel bang do
 
                                 MyImageExtractor extractor = new MyImageExtractor();
                                 ModelData[] dataTrainingBaru = extractor.TrainDataLama(GambarInputanUser, dataTrainingLama, dataStaticTraining);//Bang do insert ini ke DB setelah bobot di db dihapus semua
@@ -272,7 +283,7 @@ public class AddDataTraining extends AppCompatActivity {
 
                                 sendJsonAddInvoice();
 
-                                Bitmap GambarInputanUser = null; //ini harusnya bitmap inputan user, bantu assignkan ke variabel bang do
+
                                 ModelData inputanUser = new ModelData(kataKanji.getText().toString(), kataKorea.getText().toString(), meaningKanji.getText().toString(), GambarInputanUser, null); //Bang do insert ini ke DB
 
 
