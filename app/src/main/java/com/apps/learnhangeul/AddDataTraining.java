@@ -30,6 +30,7 @@ import com.bumptech.glide.request.RequestOptions;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.opencv.android.OpenCVLoader;
 
 import java.net.URL;
 import java.nio.channels.FileLock;
@@ -49,6 +50,16 @@ public class AddDataTraining extends AppCompatActivity {
     Bitmap GambarInputanUser = null;
 
 
+    private static final String TAG = "AddTrainingData";
+    static {
+        if (OpenCVLoader.initDebug()){
+            Log.d(TAG, "OpenCV is configured successfully");
+        }
+        else{
+
+            Log.d(TAG, "OpenCV is not configured correctly");
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +71,9 @@ public class AddDataTraining extends AppCompatActivity {
 
         mItemsStatic = new ArrayList<>();
         mItems = new ArrayList<>();
-
+        if (!OpenCVLoader.initDebug()) {
+            // Handle initialization error
+        }
 
 
 
@@ -284,8 +297,9 @@ public class AddDataTraining extends AppCompatActivity {
                                 sendJsonAddInvoice();
 
 
-                                ModelData inputanUser = new ModelData(kataKanji.getText().toString(), kataKorea.getText().toString(), meaningKanji.getText().toString(), GambarInputanUser, null); //Bang do insert ini ke DB
-
+                                ModelData inputanUser = new ModelData(kataKanji.getText().toString(), kataKorea.getText().toString(), meaningKanji.getText().toString(), GambarInputanUser, null);
+                                MyImageExtractor extractor = new MyImageExtractor();
+                                ModelData InputanUserBerbobot = extractor.TrainDataBaru(inputanUser); //Bang do insert ini ke DB
 
                                 //Tarok logic functionnya disini kalo data BELUM ada sebelumnya didatabase
                                 //place traindatabaru here...
