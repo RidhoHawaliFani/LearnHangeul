@@ -50,6 +50,15 @@ public class ModelData {
         this.bobot = bobot;
     }
 
+    public ModelData( String kataKanji, String kataKorea, String artiKata,Bitmap image,  double[] bobot) {
+        this.kataKanji = kataKanji;
+        this.kataKorea = kataKorea;
+        this.image = image;
+        this.artiKata = artiKata;
+        this.bobot = bobot;
+    }
+    public ModelData(){}
+
     String kataKanji;
     String kataKorea;
     Bitmap image;

@@ -180,6 +180,7 @@ public class AddDataTraining extends AppCompatActivity {
                             loadAllDataFromDatabase();
 
 
+                            //update datatraining baru ke db disini
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -250,10 +251,6 @@ public class AddDataTraining extends AppCompatActivity {
                         Log.d("RESPONS EDIT AKUN", ServerResponse);
 
 
-                        MyImageExtractor extractor = new MyImageExtractor();
-
-
-
                         try {
                             JSONObject jsonObject = new JSONObject(ServerResponse);
                             if (jsonObject.optString("status").equals("true")) {
@@ -262,10 +259,21 @@ public class AddDataTraining extends AppCompatActivity {
                                 //Tarok logic functionnya disini kalo data sudah ada sebelumnya didatabase
                                 loadAllDataFromDatabase();
 
+
+                                ModelData[] dataTrainingLama = mItems.toArray(new ModelData[mItems.size()]);
+                                StaticData[] dataStaticTraining =  mItemsStatic.toArray(new StaticData[mItemsStatic.size()]);
+                                Bitmap GambarInputanUser = null; //ini harusnya bitmap inputan user, bantu assignkan ke variabel bang do
+
+                                MyImageExtractor extractor = new MyImageExtractor();
+                                ModelData[] dataTrainingBaru = extractor.TrainDataLama(GambarInputanUser, dataTrainingLama, dataStaticTraining);//Bang do insert ini ke DB setelah bobot di db dihapus semua
+
                             } else {
                                 customToast.Show_Toast(AddDataTraining.this, "Data Baru Sedang Diproses\nHarap menunggu...", Gravity.TOP|Gravity.CENTER);
 
                                 sendJsonAddInvoice();
+
+                                Bitmap GambarInputanUser = null; //ini harusnya bitmap inputan user, bantu assignkan ke variabel bang do
+                                ModelData inputanUser = new ModelData(kataKanji.getText().toString(), kataKorea.getText().toString(), meaningKanji.getText().toString(), GambarInputanUser, null); //Bang do insert ini ke DB
 
 
                                 //Tarok logic functionnya disini kalo data BELUM ada sebelumnya didatabase
