@@ -186,7 +186,7 @@ public class AddDataTraining extends AppCompatActivity {
                         try {
                             JSONObject jsonObject = new JSONObject(ServerResponse);
                             //place message here.......
-
+                            customToast.Show_Toast(AddDataTraining.this, "Data berhasil disimpan...", Gravity.TOP|Gravity.CENTER);
                             //load data after saving new data-
                             loadAllDataFromDatabase();
 
@@ -285,8 +285,7 @@ public class AddDataTraining extends AppCompatActivity {
 
 
                                 ModelData inputanUser = new ModelData(kataKanji.getText().toString(), kataKorea.getText().toString(), meaningKanji.getText().toString(), GambarInputanUser, null); //Bang do insert ini ke DB
-
-
+                                
                                 //Tarok logic functionnya disini kalo data BELUM ada sebelumnya didatabase
                                 //place traindatabaru here...
 
