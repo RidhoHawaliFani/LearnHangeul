@@ -242,61 +242,7 @@ public class AddDataTraining extends AppCompatActivity {
         requestQueue.add(stringRequest2);
     }
 
-    private void insertBobotToDatabase(final ModelData modelData) {
 
-        // Creating string request with post method.
-        StringRequest stringRequest2 = new StringRequest(Request.Method.POST, konfigurasi.URL_INSERT_BOBOT,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String ServerResponse) {
-                        //act
-                        Log.d("RESPONS EDIT AKUN", ServerResponse);
-
-
-                        try {
-                            JSONObject jsonObject = new JSONObject(ServerResponse);
-                            //place message here.......
-                            customToast.Show_Toast(AddDataTraining.this, "Data bobot disimpan...", Gravity.TOP|Gravity.CENTER);
-                            //load data after saving new data-
-                            loadAllDataFromDatabase();
-
-
-                            //update datatraining baru ke db disini
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-
-                    }
-                }) {
-            @Override
-            protected Map<String, String> getParams() {
-
-                // Creating Map String Params.
-                Map<String, String> params = new HashMap<>();
-
-                // Adding All values to Params.
-
-                params.put("valueBobot", modelData.getBobot().toString());
-
-
-                return params;
-            }
-
-        };
-
-        // Creating RequestQueue.
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-
-        // Adding the StringRequest object into requestQueue.
-        requestQueue.add(stringRequest2);
-    }
 
 
     private void checkDataByWord() {
@@ -357,8 +303,10 @@ public class AddDataTraining extends AppCompatActivity {
                                 MyImageExtractor extractor = new MyImageExtractor();
                                 ModelData InputanUserBerbobot = extractor.TrainDataBaru(inputanUser); //Bang do insert ini ke DB
 
+                                Log.e("RESULT BOBOT", InputanUserBerbobot.getBobot().toString());
+
                                 //PROBLEMNYA : bobot belum didapat
-                                insertBobotToDatabase(InputanUserBerbobot);
+                                //insertBobotToDatabase(InputanUserBerbobot);
 
 
 
@@ -404,7 +352,61 @@ public class AddDataTraining extends AppCompatActivity {
         requestQueue.add(stringRequest2);
     }
 
+    private void insertBobotToDatabase(final ModelData modelData) {
 
+        // Creating string request with post method.
+        StringRequest stringRequest2 = new StringRequest(Request.Method.POST, konfigurasi.URL_INSERT_BOBOT,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String ServerResponse) {
+                        //act
+                        Log.d("RESPONS EDIT AKUN", ServerResponse);
+
+
+                        try {
+                            JSONObject jsonObject = new JSONObject(ServerResponse);
+                            //place message here.......
+                            customToast.Show_Toast(AddDataTraining.this, "Data bobot disimpan...", Gravity.TOP|Gravity.CENTER);
+                            //load data after saving new data-
+                            loadAllDataFromDatabase();
+
+
+                            //update datatraining baru ke db disini
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+
+                // Creating Map String Params.
+                Map<String, String> params = new HashMap<>();
+
+                // Adding All values to Params.
+
+                params.put("valueBobot", modelData.getBobot().toString());
+
+
+                return params;
+            }
+
+        };
+
+        // Creating RequestQueue.
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+
+        // Adding the StringRequest object into requestQueue.
+        requestQueue.add(stringRequest2);
+    }
     private void loadStaticData(){
 
         // Instantiate the RequestQueue.
