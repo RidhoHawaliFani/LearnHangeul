@@ -26,6 +26,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,8 +36,10 @@ import org.opencv.android.OpenCVLoader;
 import java.net.URL;
 import java.nio.channels.FileLock;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class AddDataTraining extends AppCompatActivity {
 
@@ -303,10 +306,11 @@ public class AddDataTraining extends AppCompatActivity {
                                 MyImageExtractor extractor = new MyImageExtractor();
                                 ModelData InputanUserBerbobot = extractor.TrainDataBaru(inputanUser); //Bang do insert ini ke DB
 
-                                Log.e("RESULT BOBOT", InputanUserBerbobot.getBobot().toString());
+
+
 
                                 //PROBLEMNYA : bobot belum didapat
-                                //insertBobotToDatabase(InputanUserBerbobot);
+                                insertBobotToDatabase(InputanUserBerbobot);
 
 
 
@@ -353,6 +357,8 @@ public class AddDataTraining extends AppCompatActivity {
     }
 
     private void insertBobotToDatabase(final ModelData modelData) {
+        Set<String> arr;
+
 
         // Creating string request with post method.
         StringRequest stringRequest2 = new StringRequest(Request.Method.POST, konfigurasi.URL_INSERT_BOBOT,
@@ -390,15 +396,21 @@ public class AddDataTraining extends AppCompatActivity {
 
                 // Creating Map String Params.
                 Map<String, String> params = new HashMap<>();
+                String data = new Gson().toJson(modelData.getBobot());
 
                 // Adding All values to Params.
+                Log.e("JSON OUT", data);
 
-                params.put("valueBobot", modelData.getBobot().toString());
+                params.put("valueBobot", data);
 
 
                 return params;
             }
 
+            @Override
+            public String getBodyContentType() {
+                return "application/x-www-form-urlencoded";
+            }
         };
 
         // Creating RequestQueue.

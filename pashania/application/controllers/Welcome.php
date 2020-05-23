@@ -200,8 +200,11 @@ public function checkData(){
     {
         $result[] = "";
         $idTerbaru = "";
-        $kataKorea = $this->input->post('valueBobot');
+        $kataKorea = json_decode($this->input->post('valueBobot'));
        
+
+        //proseshapusdata di table bobot_data_training
+        $query = $this->db->query("TRUNCATE bobot_data_training");
 
         $selectAllShop = $this->Home_model->getSelectData("*","data_training", "ORDER BY idTraining DESC LIMIT 1");
         foreach ($selectAllShop->result() as $row) {
@@ -210,17 +213,26 @@ public function checkData(){
 
         $i = 0;
 
-        while ($i <= sizeof($kataKorea)) {
-        	
-        	$data = array(
-                            'bobot' => $kataKorea,
+        foreach ($kataKorea as $key => $value) {
+            $data = array(
+                            'bobot' => $value,
                             'id_data_training' => $idTerbaru
                         );
 
                 $xxx =$this->Home_model->insertData('bobot_data_training' , $data);
-
-        	$i++;
         }
+
+        // while ($i <= sizeof($kataKorea)) {
+            
+        //     $data = array(
+        //                     'bobot' => $kataKorea,
+        //                     'id_data_training' => $idTerbaru
+        //                 );
+
+        //         $xxx =$this->Home_model->insertData('bobot_data_training' , $data);
+
+        //     $i++;
+        // }
 
 
             //Menampilkan Array dalam Format JSON

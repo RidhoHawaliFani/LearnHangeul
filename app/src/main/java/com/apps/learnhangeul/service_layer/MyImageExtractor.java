@@ -2,6 +2,7 @@ package com.apps.learnhangeul.service_layer;
 import org.opencv.core.Mat;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.apps.learnhangeul.ModelData;
 import com.apps.learnhangeul.StaticData;
@@ -66,8 +67,12 @@ public class MyImageExtractor {
         //cari bobot dari image
         input.setBobot(lib.GetBobot(trained));
 
+
+
         //kembalikan set data yang sudah berbobot
         return input;
+
+
     }
 
     //Panggil ini kalau data training uda ada di db

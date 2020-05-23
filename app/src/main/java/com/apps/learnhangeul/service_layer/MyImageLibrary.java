@@ -1,6 +1,7 @@
 package com.apps.learnhangeul.service_layer;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
@@ -30,8 +31,13 @@ public class MyImageLibrary {
             for (int y = 0; y < output.height(); y++) {
                 result[i] = output.get(y, x)[0];
 
+
             }
+
         }
+
+
+
         return result;
     }
 
