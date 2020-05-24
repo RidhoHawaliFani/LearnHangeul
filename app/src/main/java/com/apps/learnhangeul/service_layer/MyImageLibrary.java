@@ -17,7 +17,7 @@ import static org.opencv.imgproc.Imgproc.threshold;
 public class MyImageLibrary {
 
     private final int binaryTreshold = 127;
-    private final int imageSize = 300;
+    private final int imageSize = 200;
 
 
     public MyImageLibrary(){
@@ -25,13 +25,13 @@ public class MyImageLibrary {
     }
 
     public double[] GetBobot(Mat output){
-        double[] result = new double[output.width()*output.height()];
+        double[] result = new double[output.rows()*output.cols()];
         int i = 0;
-        for (int x = 0; x < output.width(); x++) {
-            for (int y = 0; y < output.height(); y++) {
-                result[i] = output.get(y, x)[0];
+        for (int x = 0; x < output.rows(); x++) {
+            for (int y = 0; y < output.cols(); y++) {
+                result[i] = output.get(x, y)[0];
 
-
+                i++;
             }
 
         }
@@ -57,6 +57,9 @@ public class MyImageLibrary {
         //transform to gray scale image
         cvtColor(result, result, Imgproc.COLOR_RGB2GRAY);
 
+        //transform image to binary
+        threshold(result, result, binaryTreshold, 1, THRESH_BINARY);
+
         //segmentasi + ROI
         int x, y, width, height = 0;
         int[] topLeftPixel = FindTopLeftPixel(result);
@@ -64,8 +67,8 @@ public class MyImageLibrary {
 
         x = topLeftPixel[0];
         y = topLeftPixel[1];
-        width = (botRightPixel[0] - topLeftPixel[0])+1;
-        height = (botRightPixel[1] - topLeftPixel[1])+1;
+        width = (botRightPixel[0] - topLeftPixel[0]);
+        height = (botRightPixel[1] - topLeftPixel[1]);
 
         Rect roi = new Rect(x, y , width , height);
         result = new Mat(result, roi);
@@ -73,8 +76,6 @@ public class MyImageLibrary {
         //resize to size we want
         resize(result, result, imgBaseSize );
 
-        //transform image to binary
-        threshold(result, result, binaryTreshold, 1, THRESH_BINARY);
 
         //erode image
         //erode(result, result, kernel);
@@ -84,9 +85,9 @@ public class MyImageLibrary {
     public int[] FindBotRightPixel(Mat input){
 
         int[] result = new int[2];
-        for (int x = input.width()-1; x >= 0 ; x--) {
-            for (int y = input.height()-1; y >= 0; y--) {
-                if (input.get(y, x)[0] >= binaryTreshold){
+        for (int x = input.rows()-1; x >= 0 ; x--) {
+            for (int y = input.cols()-1; y >= 0; y--) {
+                if (input.get(x, y)[0] == 0){
                     result[0] = x;
                     result[1] = y;
                     return result;
@@ -94,16 +95,15 @@ public class MyImageLibrary {
             }
         }
 
-        result[0] = input.width()-1;
-        result[1] = input.height()-1;
+        result[0] = input.rows()-1;
+        result[1] = input.cols()-1;
         return result;
     }
     public int[] FindTopLeftPixel(Mat input){
-
         int[] result = new int[2];
-        for (int x = 0; x < input.width(); x++) {
-            for (int y = 0; y < input.height(); y++) {
-                if (input.get(y, x)[0] >= binaryTreshold){
+        for (int x = 0; x < input.rows(); x++) {
+            for (int y = 0; y < input.cols(); y++) {
+                if (input.get(x, y)[0] == 0){
                     result[0] = x;
                     result[1] = y;
                     return result;
