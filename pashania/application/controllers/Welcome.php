@@ -63,7 +63,7 @@ class Welcome extends CI_Controller {
            
 
             array_push($result,array(
-                "filePath"=> "http://192.168.43.90/pashania/".$row->filePath
+                "filePath"=> "http://192.168.1.107/pashania/".$row->filePath
                 
             ));
         }
@@ -185,7 +185,7 @@ public function checkData(){
                 "kataKanji"=>$row->kataKanjiKorea,
                 "kataKorea"=>$row->kataKorea,
                 "artiKata"=>$row->artiKata,
-                "gambarKanji"=> "http://192.168.43.90/pashania/".$row->filePath
+                "gambarKanji"=> "http://192.168.1.107/pashania/".$row->filePath
                 
             ));
         }
@@ -204,7 +204,7 @@ public function checkData(){
        
 
         //proseshapusdata di table bobot_data_training
-        $query = $this->db->query("TRUNCATE bobot_data_training");
+        //$query = $this->db->query("TRUNCATE bobot_data_training");
 
         $selectAllShop = $this->Home_model->getSelectData("*","data_training", "ORDER BY idTraining DESC LIMIT 1");
         foreach ($selectAllShop->result() as $row) {
@@ -212,29 +212,16 @@ public function checkData(){
         }
 
         $i = 0;
-
+        $data = array();
         foreach ($kataKorea as $key => $value) {
-            $data = array(
+            array_push($data,array(
                             'bobot' => $value,
                             'id_data_training' => $idTerbaru
-                        );
+                        ));
 
-                $xxx =$this->Home_model->insertData('bobot_data_training' , $data);
         }
 
-        // while ($i <= sizeof($kataKorea)) {
-            
-        //     $data = array(
-        //                     'bobot' => $kataKorea,
-        //                     'id_data_training' => $idTerbaru
-        //                 );
-
-        //         $xxx =$this->Home_model->insertData('bobot_data_training' , $data);
-
-        //     $i++;
-        // }
-
-
+        $xxx =$this->Home_model->insertDataBulk('bobot_data_training' , $data);
             //Menampilkan Array dalam Format JSON
         echo json_encode(array('result'=>$result));
 

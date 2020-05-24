@@ -50,6 +50,10 @@ Class Home_model extends CI_Model{
 		$result = $this->db->insert($tableName, $data);
 		return $result;
 	}
+	public function insertDataBulk($tableName, $data){
+		$result = $this->db->insert_batch($tableName, $data);
+		return $result;
+	}
 
 	public function insertData2nd($tableName, $data){
 		$result = $this->db2->insert($tableName, $data);
