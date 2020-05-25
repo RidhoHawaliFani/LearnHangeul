@@ -177,17 +177,42 @@ public function checkData(){
     public function getAllItem()
     {
        $result[] = "";
+       $simpanBobotHere[] = "";
        $selectAllShop = $this->Home_model->getSelectData("*","data_training", "ORDER BY idTraining ASC");
+
+
+       
         foreach ($selectAllShop->result() as $row) {
                 //Memasukkan Nama dan ID kedalam Array Kosong yang telah dibuat 
-
-            array_push($result,array(
-                "kataKanji"=>$row->kataKanjiKorea,
-                "kataKorea"=>$row->kataKorea,
-                "artiKata"=>$row->artiKata,
-                "gambarKanji"=> "http://192.168.1.107/pashania/".$row->filePath
                 
-            ));
+                $idGet = $row->idTraining;
+
+                $getBobot = $this->Home_model->getDataBobotByID("bobot_data_training", "WHERE id_data_training='$idGet'");
+
+                        foreach ($getBobot->result() as $row2) {
+                            if ($row->idTraining == $row2->id_data_training) {
+                                array_push($simpanBobotHere, array(
+                                    "bobot_data_value" =>$row2->bobot
+                                ));
+                            }
+                        }
+
+
+                        array_push($result,array(
+                
+                            "kataKanji"=>$row->kataKanjiKorea,
+                            "kataKorea"=>$row->kataKorea,
+                            "artiKata"=>$row->artiKata,
+                            "gambarKanji"=> "http://192.168.43.90/pashania/".$row->filePath,
+                            "bobot_array" => $simpanBobotHere
+                            
+                        ));
+
+                        
+            
+            //$simpanBobotHere[] = $row->bobot;
+
+            
         }
             //Menampilkan Array dalam Format JSON
         echo json_encode(array('result'=>$result));

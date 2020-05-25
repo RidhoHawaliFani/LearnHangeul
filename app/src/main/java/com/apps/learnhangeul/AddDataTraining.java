@@ -357,9 +357,6 @@ public class AddDataTraining extends AppCompatActivity {
     }
 
     private void insertBobotToDatabase(final ModelData modelData) {
-        Set<String> arr;
-
-
         // Creating string request with post method.
         StringRequest stringRequest2 = new StringRequest(Request.Method.POST, konfigurasi.URL_INSERT_BOBOT,
                 new Response.Listener<String>() {
@@ -514,10 +511,14 @@ public class AddDataTraining extends AppCompatActivity {
                         Bitmap resultImage = getBitmapFromURL(Jasonobject.getString("gambarKanji"));
                         ModelData md = new ModelData();
 
+                        String idtrainingget = Jasonobject.getString("idDataTraining");
+
                         md.setImage(resultImage);
                         md.setKataKanji(Jasonobject.getString("kataKanji"));
                         md.setKataKorea(Jasonobject.getString("kataKorea"));
                         md.setArtiKata(Jasonobject.getString("artiKata"));
+
+
                         // memanggil nama array yang kita buat
                         mItems.add(md);
                         Log.e("getDataAllBawah_"+(i-1), mItems.get(i-1).getAllData());

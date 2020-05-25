@@ -11,6 +11,11 @@ Class Home_model extends CI_Model{
 		return $result;
 	}
 
+	public function getDataBobotByID($tableName, $where){
+		$result = $this->db->query("select * from $tableName $where");
+		return $result;
+	}
+
 	public function getRate($tableName, $where){
 		$result = $this->db->query("select round($tableName,1) rerata from $where");
 		return $result->row()->rerata;
