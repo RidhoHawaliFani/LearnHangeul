@@ -63,7 +63,7 @@ class Welcome extends CI_Controller {
            
 
             array_push($result,array(
-                "filePath"=> "http://192.168.1.107/pashania/".$row->filePath
+                "filePath"=> "http://192.168.43.90/pashania/".$row->filePath
                 
             ));
         }
@@ -174,6 +174,8 @@ public function checkData(){
     }
 
 
+
+
     public function getAllItem()
     {
        $result[] = "";
@@ -219,7 +221,48 @@ public function checkData(){
 
 
     }
-    
+
+    public function insertBobotToNewestItemBackup()
+    {
+        $result[] = "";
+        $idTerbaru = "";
+        $kataKorea = json_decode($this->input->post('valueBobot'));
+       
+
+        $selectAllShop = $this->Home_model->getSelectData("*","data_training", "ORDER BY idTraining DESC LIMIT 1");
+        foreach ($selectAllShop->result() as $row) {
+                $idTerbaru = $row->idTraining;
+        }
+
+        $i = 0;
+
+        foreach ($kataKorea as $key => $value) {
+            $data = array(
+                            'bobot' => $value,
+                            'id_data_training' => $idTerbaru
+                        );
+
+                $xxx =$this->Home_model->insertData('bobot_data_training' , $data);
+        }
+
+        // while ($i <= sizeof($kataKorea)) {
+            
+        //     $data = array(
+        //                     'bobot' => $kataKorea,
+        //                     'id_data_training' => $idTerbaru
+        //                 );
+
+        //         $xxx =$this->Home_model->insertData('bobot_data_training' , $data);
+
+        //     $i++;
+        // }
+
+
+            //Menampilkan Array dalam Format JSON
+        echo json_encode(array('result'=>$result));
+
+
+    }
 
     public function insertBobotToNewestItem()
     {

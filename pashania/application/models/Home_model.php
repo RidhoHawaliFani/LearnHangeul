@@ -16,6 +16,11 @@ Class Home_model extends CI_Model{
 		return $result;
 	}
 
+	public function insertDataBulk($tableName, $data){
+		$result = $this->db->insert_batch($tableName, $data);
+		return $result;
+	}
+
 	public function getRate($tableName, $where){
 		$result = $this->db->query("select round($tableName,1) rerata from $where");
 		return $result->row()->rerata;
@@ -55,10 +60,8 @@ Class Home_model extends CI_Model{
 		$result = $this->db->insert($tableName, $data);
 		return $result;
 	}
-	public function insertDataBulk($tableName, $data){
-		$result = $this->db->insert_batch($tableName, $data);
-		return $result;
-	}
+
+
 
 	public function insertData2nd($tableName, $data){
 		$result = $this->db2->insert($tableName, $data);
