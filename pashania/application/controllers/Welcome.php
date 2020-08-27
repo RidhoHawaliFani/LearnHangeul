@@ -180,6 +180,7 @@ public function checkData(){
     {
        $result[] = "";
        $simpanBobotHere[] = "";
+       // $simpanTargetHere[] = "";
        $selectAllShop = $this->Home_model->getSelectData("*","data_training", "ORDER BY idTraining ASC");
 
 
@@ -194,9 +195,14 @@ public function checkData(){
                         foreach ($getBobot->result() as $row2) {
                             if ($row->idTraining == $row2->id_data_training) {
                                 array_push($simpanBobotHere, array(
-                                    "bobot_data_value" =>$row2->bobot
+                                    "bobot_data_value" =>$row2->bobot,
                                 ));
                             }
+                            // if ($row->idTraining == $row2->id_data_training) {
+                            //     array_push($simpanTargetHere, array(
+                            //         "target_data_value" =>$row2->target,
+                            //     ));
+                            // }
                         }
 
 
@@ -206,7 +212,8 @@ public function checkData(){
                             "kataKorea"=>$row->kataKorea,
                             "artiKata"=>$row->artiKata,
                             "gambarKanji"=> "http://192.168.43.90/pashania/".$row->filePath,
-                            "bobot_array" => $simpanBobotHere
+                            "bobot_array" => $simpanBobotHere,
+                            // "target_array" => $simpanTargetHere,
                             
                         ));
 
@@ -269,10 +276,8 @@ public function checkData(){
         $result[] = "";
         $idTerbaru = "";
         $kataKorea = json_decode($this->input->post('valueBobot'));
-       
+        // $nilaiTarget = json_decode($this->input->post('nilaiTarget'));
 
-        //proseshapusdata di table bobot_data_training
-        //$query = $this->db->query("TRUNCATE bobot_data_training");
 
         $selectAllShop = $this->Home_model->getSelectData("*","data_training", "ORDER BY idTraining DESC LIMIT 1");
         foreach ($selectAllShop->result() as $row) {
@@ -284,7 +289,8 @@ public function checkData(){
         foreach ($kataKorea as $key => $value) {
             array_push($data,array(
                             'bobot' => $value,
-                            'id_data_training' => $idTerbaru
+                            'id_data_training' => $idTerbaru,
+                            // 'target' => $nilaiTarget,
                         ));
 
         }

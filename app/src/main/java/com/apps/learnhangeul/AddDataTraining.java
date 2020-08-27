@@ -395,6 +395,10 @@ public class AddDataTraining extends AppCompatActivity {
                 Map<String, String> params = new HashMap<>();
                 String data = new Gson().toJson(modelData.getBobot());
 
+                //masukkan nilai target disini...
+                //
+                //
+
                 // Adding All values to Params.
                 Log.e("JSON OUT", data);
 
@@ -526,9 +530,21 @@ public class AddDataTraining extends AppCompatActivity {
 
                             Log.e("bobot_"+j, jObNew.getString("bobot_data_value\n"));
                         }
-
-                        //set bobot array
                         md.setBobot(ar);
+
+                        //getTarget Data
+//                        JSONArray jr2 = Jasonobject.getJSONArray("target_array");
+//                        Log.e("target_array_lenght", jr2.toString());
+//                        float[] ar2 = new float[jr2.length()];
+//                        for (int j=1; j <= jr2.length(); j++) {
+//                            JSONObject jObNew = jr2.getJSONObject(j);
+//                            ar[j] = Double.parseDouble(jObNew.getString("bobot_data_value"));
+//
+//                            Log.e("target_"+j, jObNew.getString("target_data_value\n"));
+//                        }
+//
+//                        //set bobot array
+//                        md.setTarget(ar2);
 
                         String data = new Gson().toJson(md.getBobot());
                         // Adding All values to Params.
