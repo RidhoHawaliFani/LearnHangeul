@@ -18,24 +18,25 @@ public class MyImageExtractor {
     public ModelData FindKoreanWord(Bitmap input, ModelData[] data){
         MyImageLibrary lib = new MyImageLibrary();
         Mat test = lib.Preprocess(input);
-        double[] bobotTesting = lib.GetBobot(test);
+        double[] bobotTesting = lib.GetBobot(test); //AMBIL NILAI BOBOT W1
 
         int smallestDistanceIndex = 0;
 
         //persiapan penampung hasil jarak sesuai banyaknya jumlah data training
         double[] result = new double[data.length];
 
-        //loop sesuai jumlah maxEpoch
+        //LOOP SESUAI JUMLAH DATA TRAINING
         for (int i = 0; i < data.length ; i++){
 
             //konversi Data training ke bentuk yang kita mau ( 400x400 dan binary )
-            double[] bobotTraining = data[i].getBobot();
+            double[] bobotTraining = data[i].getBobot();//BOBOT X1
 
             //variable temporary untuk penampung jarak antara
             // training dan testing
             int distance = 0;
 
             //loop sesuai besar image testing
+            //MENCARI NILAI SUM BOBOT W1
             for (int x = 0; x < bobotTraining.length; x++){
                 result[i] = 0;
                 //mengambil nilai pixel image testing dan training
@@ -122,23 +123,28 @@ public class MyImageExtractor {
                 //jumlah semua jarak pixel testing dan training diakar kuadrat
                 result[i] = Math.sqrt(distance);
 
+
+                //mengambil index dari array data training yang nilai jaraknya terendah
+                smallestDistanceIndex = lib.FindSmallestNumberIndex(result); //2
+
+                //data training yang sesuai dikembalikan
+                //update bobot ke yang terbaru
+                double[] bobotTest = bobotTesting;
+                double[] bobotTrain = data[smallestDistanceIndex].getBobot();
+
+                double[] bobotBaru = new double[bobotTrain.length];
+                if (data[i].getTarget() == distance){
+                    for (int j = 0; j< bobotBaru.length; j++){
+                        bobotBaru[j] = Math.round(bobotTrain[j] + learning_rate * (bobotTest[j] - bobotTrain[j]));
+                    }
+                }else{
+                    for (int j = 0; j< bobotBaru.length; j++){
+                        bobotBaru[j] = Math.round(bobotTrain[j] - learning_rate * (bobotTest[j] - bobotTrain[j]));
+                    }
+                }
+
+                data[smallestDistanceIndex].setBobot(bobotBaru);
             }
-
-            //mengambil index dari array data training yang nilai jaraknya terendah
-            smallestDistanceIndex = lib.FindSmallestNumberIndex(result);
-
-            //data training yang sesuai dikembalikan
-            //update bobot ke yang terbaru
-            double[] bobotTest = bobotTesting;
-            double[] bobotTrain = data[smallestDistanceIndex].getBobot();
-
-            double[] bobotBaru = new double[bobotTrain.length];
-
-            for (int i = 0; i< bobotBaru.length; i++){
-                bobotBaru[i] = Math.round(bobotTrain[i] + learning_rate * (bobotTest[i] - bobotTrain[i]));
-            }
-
-            data[smallestDistanceIndex].setBobot(bobotBaru);
 
             learning_rate = learning_rate - ((1/10) * learning_rate);
             epoch++;
