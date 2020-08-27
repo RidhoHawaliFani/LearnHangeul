@@ -180,7 +180,7 @@ public function checkData(){
     {
        $result[] = "";
        $simpanBobotHere[] = "";
-       // $simpanTargetHere[] = "";
+       $simpanTargetHere[] = "";
        $selectAllShop = $this->Home_model->getSelectData("*","data_training", "ORDER BY idTraining ASC");
 
 
@@ -198,11 +198,11 @@ public function checkData(){
                                     "bobot_data_value" =>$row2->bobot,
                                 ));
                             }
-                            // if ($row->idTraining == $row2->id_data_training) {
-                            //     array_push($simpanTargetHere, array(
-                            //         "target_data_value" =>$row2->target,
-                            //     ));
-                            // }
+                            if ($row->idTraining == $row2->id_data_training) {
+                                array_push($simpanTargetHere, array(
+                                    "target_data_value" =>$row2->target,
+                                ));
+                            }
                         }
 
 
@@ -213,7 +213,7 @@ public function checkData(){
                             "artiKata"=>$row->artiKata,
                             "gambarKanji"=> "http://192.168.43.90/pashania/".$row->filePath,
                             "bobot_array" => $simpanBobotHere,
-                            // "target_array" => $simpanTargetHere,
+                            "target_array" => $simpanTargetHere,
                             
                         ));
 
@@ -276,7 +276,7 @@ public function checkData(){
         $result[] = "";
         $idTerbaru = "";
         $kataKorea = json_decode($this->input->post('valueBobot'));
-        // $nilaiTarget = json_decode($this->input->post('nilaiTarget'));
+        $nilaiTarget = json_decode($this->input->post('nilaiTarget'));
 
 
         $selectAllShop = $this->Home_model->getSelectData("*","data_training", "ORDER BY idTraining DESC LIMIT 1");
@@ -290,7 +290,7 @@ public function checkData(){
             array_push($data,array(
                             'bobot' => $value,
                             'id_data_training' => $idTerbaru,
-                            // 'target' => $nilaiTarget,
+                            'target' => $nilaiTarget,
                         ));
 
         }
