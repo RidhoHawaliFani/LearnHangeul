@@ -198,11 +198,7 @@ public function checkData(){
                                     "bobot_data_value" =>$row2->bobot,
                                 ));
                             }
-                            if ($row->idTraining == $row2->id_data_training) {
-                                array_push($simpanTargetHere, array(
-                                    "target_data_value" =>$row2->target,
-                                ));
-                            }
+                            
                         }
 
 
@@ -213,7 +209,7 @@ public function checkData(){
                             "artiKata"=>$row->artiKata,
                             "gambarKanji"=> "http://192.168.43.90/pashania/".$row->filePath,
                             "bobot_array" => $simpanBobotHere,
-                            "target_array" => $simpanTargetHere,
+                            "target_array" => $row->target,
                             
                         ));
 
@@ -276,7 +272,7 @@ public function checkData(){
         $result[] = "";
         $idTerbaru = "";
         $kataKorea = json_decode($this->input->post('valueBobot'));
-        $nilaiTarget = json_decode($this->input->post('nilaiTarget'));
+        $nilaiTarget = $this->input->post('valueTarget');
 
 
         $selectAllShop = $this->Home_model->getSelectData("*","data_training", "ORDER BY idTraining DESC LIMIT 1");
