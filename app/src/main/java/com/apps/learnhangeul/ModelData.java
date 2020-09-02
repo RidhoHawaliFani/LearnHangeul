@@ -65,14 +65,14 @@ public class ModelData {
     String artiKata;
     double[] bobot;
 
-    public float getTarget() {
+    public int getTarget() {
         return target;
     }
 
-    public void setTarget(float target) {
+    public void setTarget(int target) {
         this.target = target;
     }
 
-    float target;
+    int target;
 
 }

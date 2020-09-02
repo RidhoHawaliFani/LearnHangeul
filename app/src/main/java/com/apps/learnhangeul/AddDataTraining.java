@@ -395,7 +395,7 @@ public class AddDataTraining extends AppCompatActivity {
                 Map<String, String> params = new HashMap<>();
                 String data = new Gson().toJson(modelData.getBobot());
 
-                Double dataFloat = 0.0;
+                Integer dataFloat = 0;
 
                 //masukkan nilai target disini...
                 //
@@ -537,7 +537,7 @@ public class AddDataTraining extends AppCompatActivity {
                         md.setBobot(ar);
 
 //                      getTarget Data
-                        Float jr2 = Float.parseFloat(Jasonobject.getString("target_array"));
+                        Integer jr2 = Integer.parseInt(Jasonobject.getString("target_array"));
 
                         //set bobot array
                         md.setTarget(jr2);
